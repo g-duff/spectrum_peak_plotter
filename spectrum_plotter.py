@@ -2,6 +2,12 @@ import os
 import sys
 import numpy as np
 
+
+
+## Set wavelength range)
+xi = 700
+xf = 800
+
 ## We fit a "Fano lineshape" to the peak in the spectrum
 ## Python needs a Fano function, defined at the top to
 ## fit this curve
@@ -34,10 +40,6 @@ def f_lsq(params, x, y_meas):
     y_fan = fano(x, *params)
     res = y_fan-y_meas
     return res
-
-## Set wavelength range)
-xi = 700
-xf = 800
 
 ## We make a variable "root", which is the folder that you ##
 ## have draged and dropped this code into ##
