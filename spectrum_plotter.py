@@ -41,17 +41,12 @@ for index, selected_file in enumerate(data_files):
     ## We find the peak wavelength and append it to our "peak_wl" list
     peak = float(wavelength[np.argmax(intensity)])
     peak_wl.append(peak)
-    
-    ## We find time stamp in the file name.
-    time_stamp = (file.split('.')[0]).split('_')[::0-1]
-    
-    ## We convert that time stamp to the time in seconds
-    time_stamp_seconds = (int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
-            +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000)
-        
-    ## We add the time stamp in seconds to our time stamp list, "t" ##
-    t.append(time_stamp_seconds)
-    print(str(int((index/N) *100))+'%')
-    
+
+    ## We pull the time stamp from the file name and convert to seconds ##
+    time_stamp = (selected_file.split('.')[0]).split('_')[::-1]
+    t.append((int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
+            +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000))
+    print("Completion: " + str(int((index/N) *100))+'%', end='\r')
+
 data = np.vstack((t, peak_wl)).T
 print(data)
