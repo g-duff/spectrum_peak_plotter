@@ -6,37 +6,52 @@ import numpy as np
 xi = 700
 xf = 800
 
-## Root is defined as the directory in which this code sits. ##
+## We make a variable "root", which is the folder that you ##
+## have draged and dropped this code into ##
 root = os.getcwd()
-## We use the operating system function "get current working directory". ##
-## We want a list of all the spectrums that need to be analysed. We call ##
-## this list, or array, data_files and it contains a sorted list of all  ##
-## the spectrums. These are distinguished by their file extension (.csv).##
+
+## Our "data_files" variable is a list of all the .csv file names in the ##
+## same folder that you dragged and dropped this code into. We sorted    ##
+## names in order of earliest time to latest time. ##
 data_files = [a for a in sorted(os.listdir(root)) if '.csv' in a]
-## We would like to know how many files are within data_files (the length). ##
+
+## N is the number of file names in the list called "data_files" ##
 N = len(data_files)
-## Create a blank array to append the time stamps to ##
+
+## Create an empty list which we will fill later. #
+## We'll fill this list with the time at which each spectrum was taken ##
 t = []
-## Create a blank array to append the peak wavelengths to ##
+
+## Create another empty list to fill later. #
+## We'll fill this list with the peak wavelength in every spectrum ## 
 peak_wl = []
-## Now we want to individually load in every spectrum and analyse. We can do ##
-## this in a for loop. ##
+
+
+## We load in each spectrum, one by one, and find the peak wavelength. ## 
+## We can do this in a for loop. ##
 for index, selected_file in enumerate(data_files):
-    ## Now we need to know the file path to this file, we use the operating ##
-    ## system (os) function path.join to join our current path, and the file.##
-    file = os.path.join(root, selected_file)
-    ## Using numpy (a python library) we can load in the data values within ##
-    ## the file. ##
-    wl, i = np.genfromtxt(fname=file, delimiter=';', skip_header=33,
+        
+    ## "genfromtxt" loads the "selected_file" ##
+    wl, i = np.genfromtxt(fname=selected_file, delimiter=';', skip_header=33,
                           skip_footer=1, unpack=True)
+    
     wavelength = np.arange(xi, xf + 1, 0.01)
     intensity = np.interp(x=wavelength, fp=i, xp=wl)
+    
+    ## We find the peak wavelength and append it to our "peak_wl" list
     peak = float(wavelength[np.argmax(intensity)])
     peak_wl.append(peak)
-    ## We now pull the time stamp from the file name and convert to seconds ##
+    
+    ## We find time stamp in the file name.
     time_stamp = (file.split('.')[0]).split('_')[::0-1]
-    t.append((int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
-            +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000))
+    
+    ## We convert that time stamp to the time in seconds
+    time_stamp_seconds = (int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
+            +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000)
+        
+    ## We add the time stamp in seconds to our time stamp list, "t" ##
+    t.append(time_stamp_seconds)
     print(str(int((index/N) *100))+'%')
+    
 data = np.vstack((t, peak_wl)).T
 print(data)
