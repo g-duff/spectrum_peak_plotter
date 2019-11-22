@@ -23,21 +23,21 @@ N = len(data_files)
 t = []
 
 ## Create another empty list to fill later. #
-## We'll fill this list with the peak wavelength in every spectrum ## 
+## We'll fill this list with the peak wavelength in every spectrum ##
 peak_wl = []
 
 
-## We load in each spectrum, one by one, and find the peak wavelength. ## 
+## We load in each spectrum, one by one, and find the peak wavelength. ##
 ## We can do this in a for loop. ##
 for index, selected_file in enumerate(data_files):
-        
+
     ## "genfromtxt" loads the "selected_file" ##
     wl, i = np.genfromtxt(fname=selected_file, delimiter=';', skip_header=33,
                           skip_footer=1, unpack=True)
-    
+
     wavelength = np.arange(xi, xf + 1, 0.01)
     intensity = np.interp(x=wavelength, fp=i, xp=wl)
-    
+
     ## We find the peak wavelength and append it to our "peak_wl" list
     peak = float(wavelength[np.argmax(intensity)])
     peak_wl.append(peak)
