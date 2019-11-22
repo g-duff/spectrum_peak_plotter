@@ -2,6 +2,8 @@ import os
 import sys
 import numpy as np
 
+## This program ...... blah blah
+
 ## Set wavelength range)
 xi = 700
 xf = 800
