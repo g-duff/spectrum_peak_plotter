@@ -1,6 +1,6 @@
-## How to run spectrum_peak_plotter
+# How to run spectrum_peak_plotter
 
-# How to run on mac:
+## How to run on mac:
 1. Download .zip file
 1. Unzip file
 1. Drag and drop .py file to the same folder as your data
