@@ -42,7 +42,8 @@ for index, selected_file in enumerate(data_files):
     peak = float(wavelength[np.argmax(intensity)])
     peak_wl.append(peak)
 
-    ## We pull the time stamp from the file name and convert to seconds ##
+    ## We pull the time stamp from inside name and convert to seconds ##
+    load whatever blah blah
     time_stamp = (selected_file.split('.')[0]).split('_')[::-1]
     t.append((int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
             +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000))
