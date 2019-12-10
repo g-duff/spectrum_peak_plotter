@@ -47,6 +47,8 @@ for index, selected_file in enumerate(data_files):
     with open(selected_file) as open_file:
         time_stamp = [open_file.readline() for i in range(4)]
     time_stamp = (time_stamp[3].split(';')[1])[:-1]+'0'
+
+    ## Convert timestamp to minutes and add to our time list, t.
     hr, min, sec, ms = time_stamp[0:2], time_stamp[2:4] , time_stamp[4:6], time_stamp[6:]
     t_minutes = int(hr)*60+(int(min)*60)+(int(sec)/60)
     t.append(t_minutes)
@@ -57,4 +59,3 @@ data = np.vstack((t, peak_wl)).T
 np.savetxt('peak_wavelengths.txt', data,
     delimiter='\t',
     header='time(min)\t\t\tpeak wavelength (nm)')
-
