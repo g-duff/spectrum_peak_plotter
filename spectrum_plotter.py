@@ -1,45 +1,13 @@
 import os
 import sys
 import numpy as np
-
-
+from scipy.optimize import least_squares
+from photonics import fano_residuals, fano
+from matplotlib import pyplot as plt
 
 ## Set wavelength range)
-xi = 700
-xf = 800
-
-## We fit a "Fano lineshape" to the peak in the spectrum
-## Python needs a Fano function, defined at the top to
-## fit this curve
-def fano(x, x0, b, c, A, e):
-    """The Fano lineshape for reflection.
-
-    x: x coordinates
-    x0: Peak position
-    b: Peak width
-    c: Asymmetry parameter
-    A: Amplitude
-    e: Offset
-
-    y: The y coordinates of the Fano lineshape"""
-    eps1 = 2*(x-x0)/b1
-    f1 = (eps+c)**2/(eps**2+1)
-    y = A*f+e
-    return y
-
-def f_lsq(params, x, y_meas):
-    """ Computes the deviation of spetrum data
-    from a Fano lineshape.
-
-    params: List of Fano parameters x0, b, c, A, e
-    x: the x coordinates of the measurement
-    y: the measured y data
-
-    res: the residules
-    """
-    y_fan = fano(x, *params)
-    res = y_fan-y_meas
-    return res
+wl1 = 730
+wl2 = 740
 
 ## We make a variable "root", which is the folder that you ##
 ## have draged and dropped this code into ##
@@ -60,7 +28,7 @@ t = []
 ## Create another empty list to fill later. #
 ## We'll fill this list with the peak wavelength in every spectrum ##
 peak_wl = []
-
+fit_wl = []
 
 ## We load in each spectrum, one by one, and find the peak wavelength. ##
 ## We can do this in a for loop. ##
@@ -70,12 +38,19 @@ for index, selected_file in enumerate(data_files):
     wl, i = np.genfromtxt(fname=selected_file, delimiter=';', skip_header=33,
                           skip_footer=1, unpack=True)
 
-    wavelength = np.arange(xi, xf + 1, 0.01)
-    intensity = np.interp(x=wavelength, fp=i, xp=wl)
+    i1, i2 = np.argmin((wl-wl1)**2), np.argmin((wl-wl2)**2)
+
+    wl = wl[i1:i2]
+    i = i[i1:i2]
 
     ## We find the peak wavelength and append it to our "peak_wl" list
-    peak = float(wavelength[np.argmax(intensity)])
+    peak = float(wl[np.argmax(i)])
     peak_wl.append(peak)
+
+    ## Perform Fano fit
+    popt = [peak, -4.97554893e+00,  2.41074476e-01, -4.26937633e-01, 6.76618253e-01]
+    fano_fit = least_squares(fano_residuals, popt, args=(wl, i))
+    fit_wl.append(fano_fit.x[0])
 
     ## We pull the time stamp from the file name and convert to seconds ##
     time_stamp = (selected_file.split('.')[0]).split('_')[::-1]
@@ -84,4 +59,6 @@ for index, selected_file in enumerate(data_files):
     print("Completion: " + str(int((index/N) *100))+'%', end='\r')
 
 data = np.vstack((t, peak_wl)).T
-print(data)
+plt.plot(t, peak_wl)
+plt.plot(t, fit_wl)
+plt.show()
