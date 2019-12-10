@@ -43,11 +43,18 @@ for index, selected_file in enumerate(data_files):
     peak_wl.append(peak)
 
     ## We pull the time stamp from inside name and convert to seconds ##
-    load whatever blah blah
-    time_stamp = (selected_file.split('.')[0]).split('_')[::-1]
-    t.append((int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
-            +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000))
-    print("Completion: " + str(int((index/N) *100))+'%', end='\r')
+    ## This bit is horrible code and I know it
+    with open(selected_file) as open_file:
+        time_stamp = [open_file.readline() for i in range(4)]
+    time_stamp = time_stamp[3].split(';')[1]
+
+    print(time_stamp)
+    # print(time_stamp)
+    # t.append((int(time_stamp[4])*24*60*60)+(int(time_stamp[3])*60*60)
+    #         +(int(time_stamp[2])*60)+int(time_stamp[1])+(int(time_stamp[0])/1000))
+    # print("Completion: " + str(int((index/N) *100))+'%', end='\r')
+
+## Order the data from earliest to latest time
 
 data = np.vstack((t, peak_wl)).T
 print(data)
