@@ -23,17 +23,22 @@
 1. Download .zip file
 1. Unzip file
 1. Drag and drop .py file to the same folder as your data
-1. Open the terminal
+1. Shift-click on the folder with your data and python python file
+1. From the dropdown menu, press "open terminal"
+    * Or 'Open Powershell Window here'
+1. Type "python spectrum_plotter.py" and press "enter"
+    1. Or "python3 spectrum_plotter.py" depending on your installed version
+1. The program should run!
 
 # How to run on Linux
 * Required packages
     * Python 2.7 or Python 3.x
-    * Numpy
+    * Numpy, recommend installing using PIP
 1. Download .zip file
 1. Unzip file
 1. Drag and drop .py file to the same folder as your data
 1. Open the terminal
 1. Change directory to the data folder
 1. Type "python spectrum_plotter.py" and press "enter"
-    1. Or "python3 spectrum_plotter.py" depending on your install
+    1. Or "python3 spectrum_plotter.py" depending on your installed version
 1. The program should run!
