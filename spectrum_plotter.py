@@ -1,7 +1,7 @@
 import os
 import sys
 import numpy as np
-import scipy as sp
+from scipy import interpolate
 
 ## Set wavelength range)
 xi = 700
@@ -10,12 +10,13 @@ xf = 800
 ## We make a variable "root", which is the folder that you ##
 ## have draged and dropped this code into ##
 root = os.getcwd()
+root = '../2VFilter_1uMGlucose_Heat/'
 
 ## Our "data_files" variable is a list of all the .csv file names in the ##
 ## same folder that you dragged and dropped this code into. We sorted    ##
 ## names in order of earliest time to latest time. ##
 
-data_files = (a for a in sorted(os.listdir(root)) if '.csv' in a)
+data_files = (root+a for a in sorted(os.listdir(root)) if '.csv' in a)
 
 
 ## N is the number of file names in the directory ##
@@ -28,7 +29,9 @@ t = []
 
 ## Create another empty list to fill later. #
 ## We'll fill this list with the peak wavelength in every spectrum ##
-peak_wl = []
+raw_peak_wl = []
+interp_peak_wl = []
+cubic_peak_wl = []
 
 
 ## We load in each spectrum, one by one, and find the peak wavelength. ##
@@ -39,12 +42,23 @@ for index, selected_file in enumerate(data_files):
     wl, i = np.genfromtxt(fname=selected_file, delimiter=';', skip_header=33,
                           skip_footer=1, unpack=True)
 
-    wavelength = np.arange(xi, xf + 1, 0.01)
-    intensity = np.interp(x=wavelength, fp=i, xp=wl)
+    ## Raw peak
+    i1, i2 = np.argmin((wl-xi)**2), np.argmin((wl-xf)**2)
+    raw_peak_wl.append(wl[i1+np.argmax(i[i1:i2])])
 
-    ## We find the peak wavelength and append it to our "peak_wl" list
+    ## Wavelength ax
+    wavelength = np.arange(xi, xf + 1, 0.01)
+
+    ## Linear interpolation
+    intensity = np.interp(x=wavelength, fp=i, xp=wl)
     peak = float(wavelength[np.argmax(intensity)])
-    peak_wl.append(peak)
+    interp_peak_wl.append(peak)
+
+    ## Cubic interpolation
+    f = interpolate.interp1d(wl, i, kind='cubic')
+    intensity = f(wavelength)
+    peak = float(wavelength[np.argmax(intensity)])
+    cubic_peak_wl.append(peak)
 
     ## We pull the time stamp from inside name and convert to seconds ##
     ## This bit is horrible code and I know it
@@ -58,8 +72,7 @@ for index, selected_file in enumerate(data_files):
     t.append(t_minutes)
     print("Completion: " + str(int((index/N) *100))+'%', end='\r')
 
-data = np.vstack((t-np.min(t), peak_wl)).T
-
-np.savetxt(root+'peak_wavelengths.txt', data,
-    delimiter='\t',
-    header='time(min)\t\t\tpeak wavelength (nm)')
+data = np.vstack((t-np.min(t),raw_peak_wl, interp_peak_wl, cubic_peak_wl)).T
+print(root+'peak_wavelengths.txt')
+np.savetxt(root+'peak_wavelengths.txt', data, delimiter='\t',
+    header='time(min)\t\t\tNo interpolation (nm)\t\tLinear interpolation (nm)\tCubic interpolation (nm)')
