@@ -13,10 +13,11 @@ root = os.getcwd()
 ## Our "data_files" variable is a list of all the .csv file names in the ##
 ## same folder that you dragged and dropped this code into. We sorted    ##
 ## names in order of earliest time to latest time. ##
-data_files = [a for a in sorted(os.listdir(root)) if '.csv' in a]
+data_files = (a for a in sorted(os.listdir(root)) if '.csv' in a)
 
-## N is the number of file names in the list called "data_files" ##
-N = len(data_files)
+## N is the number of file names in the directory ##
+## We use it to estimate progress
+N = len(os.listdir(root))
 
 ## Create an empty list which we will fill later. #
 ## We'll fill this list with the time at which each spectrum was taken ##
