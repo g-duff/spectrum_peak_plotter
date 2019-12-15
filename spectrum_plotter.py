@@ -13,9 +13,7 @@ root = os.getcwd()
 ## Our "data_files" variable is a list of all the .csv file names in the ##
 ## same folder that you dragged and dropped this code into. We sorted    ##
 ## names in order of earliest time to latest time. ##
-
-data_files = (a for a in sorted(os.listdir(root)) if '.csv' in a)
-
+data_files = (root+a for a in sorted(os.listdir(root)) if '.csv' in a)
 
 ## N is the number of file names in the directory ##
 ## We use it to estimate progress
@@ -38,12 +36,10 @@ for index, selected_file in enumerate(data_files):
     wl, i = np.genfromtxt(fname=selected_file, delimiter=';', skip_header=33,
                           skip_footer=1, unpack=True)
 
-    wavelength = np.arange(xi, xf + 1, 0.01)
-    intensity = np.interp(x=wavelength, fp=i, xp=wl)
-
-    ## We find the peak wavelength and append it to our "peak_wl" list
-    peak = float(wavelength[np.argmax(intensity)])
-    peak_wl.append(peak)
+    ## Find intensity range, maximum intensity in that range
+    ## and the wavelength to which that intensity value corresponds
+    i1, i2 = np.argmin((wl-xi)**2), np.argmin((wl-xf)**2)
+    peak_wl.append(wl[i1+np.argmax(i[i1:i2])])
 
     ## We pull the time stamp from inside name and convert to seconds ##
     ## This bit is horrible code and I know it
