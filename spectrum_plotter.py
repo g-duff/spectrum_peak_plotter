@@ -13,7 +13,9 @@ root = os.getcwd()
 ## Our "data_files" variable is a list of all the .csv file names in the ##
 ## same folder that you dragged and dropped this code into. We sorted    ##
 ## names in order of earliest time to latest time. ##
+
 data_files = (a for a in sorted(os.listdir(root)) if '.csv' in a)
+
 
 ## N is the number of file names in the directory ##
 ## We use it to estimate progress
@@ -51,12 +53,12 @@ for index, selected_file in enumerate(data_files):
 
     ## Convert timestamp to minutes and add to our time list, t.
     hr, min, sec, ms = time_stamp[0:2], time_stamp[2:4] , time_stamp[4:6], time_stamp[6:]
-    t_minutes = int(hr)*60+(int(min)*60)+(int(sec)/60)
+    t_minutes = int(hr)*60+(int(min))+(int(sec)/60)
     t.append(t_minutes)
     print("Completion: " + str(int((index/N) *100))+'%', end='\r')
 
 data = np.vstack((t-np.min(t), peak_wl)).T
 
-np.savetxt('peak_wavelengths.txt', data,
+np.savetxt(root+'peak_wavelengths.txt', data,
     delimiter='\t',
     header='time(min)\t\t\tpeak wavelength (nm)')
