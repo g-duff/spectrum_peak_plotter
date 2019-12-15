@@ -55,7 +55,7 @@ for index, selected_file in enumerate(data_files):
     t.append(t_minutes)
     print("Completion: " + str(int((index/N) *100))+'%', end='\r')
 
-data = np.vstack((t, peak_wl)).T
+data = np.vstack((t-np.min(t), peak_wl)).T
 
 np.savetxt('peak_wavelengths.txt', data,
     delimiter='\t',
