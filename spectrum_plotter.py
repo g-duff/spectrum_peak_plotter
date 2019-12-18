@@ -2,13 +2,19 @@ import os
 import sys
 import numpy as np
 
+## We make a variable "root", which is the folder with your data in ##
+try:
+    import tkinter as tk
+    from tkinter import filedialog as fd
+    root = tk.Tk()
+    root.withdraw()
+    root = fd.askdirectory()+'/'
+except ModuleNotFoundError:
+    root = os.getcwd()
+
 ## Set wavelength range)
 xi = 700
 xf = 800
-
-## We make a variable "root", which is the folder that you ##
-## have draged and dropped this code into ##
-root = os.getcwd()
 
 ## Our "data_files" variable is a list of all the .csv file names in the ##
 ## same folder that you dragged and dropped this code into. We sorted    ##
